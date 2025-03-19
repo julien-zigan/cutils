@@ -10,5 +10,6 @@ typedef struct node{
 typedef NODE LIST;
 
 extern LIST *new_list();
+extern int insert(LIST *list, void *value);
 
 #endif

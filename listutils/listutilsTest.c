@@ -99,6 +99,35 @@ void new_listTest()
     free(list);
 }
 
+void insertTest()
+{
+    setup_test(__FUNCTION__);
+
+    LIST *list = new_list();
+
+    int i;
+    for (i = 0; i < 10; i++) {
+        char *data = (char *)malloc(STRBUFSZ);
+        assert(data && "Memory alloction failed");
+        sprintf(data, "Test Data %i", i);
+        insert(list, (void *)data);
+    }
+    
+    NODE *iterator = list->next;
+    while(iterator != list) {
+        char cmpdata[12];
+        sprintf(cmpdata, "Test Data %i", --i);
+        if (strcmp(iterator->data, cmpdata) != 0) {
+            fail();
+            return;
+        }
+        iterator = iterator->next;
+    }
+    
+    pass();
+    //TODO: free
+}
+
 int main(void)
 {
     begin_tests();
@@ -106,6 +135,7 @@ int main(void)
     NODETestForStringInput();
     NODETestForNumericalInput();
     new_listTest();
+    insertTest();
     
     end_tests();
     return EXIT_SUCCESS;
