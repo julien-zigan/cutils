@@ -5,16 +5,50 @@
 #include <assert.h>
 
 #define STRBUFSZ 255
+
 #define GREEN "\e[0;32m"
 #define WHT "\e[0;37m"
 #define RED "\e[0;31m"
 #define YELLOW "\e[0;33m"
 
-void NODETestForStringInput(int *tests, int *passed, int *failed)
+int tests = 0;
+int passed = 0;
+int failed = 0;
+
+void begin_tests()
 {
-    (*tests)++;
-    printf("Test %i: NODETestForStringInput\t\t", *tests);
-    
+    puts("");
+    printf(YELLOW"Running Tests...\n"WHT"\n");
+}
+
+void end_tests()
+{
+    puts("");
+    printf(YELLOW"Tests run: %i, "GREEN"passed: %i, "RED"failed: %i"WHT, tests, passed, failed);
+    puts("\n");
+}
+
+void setup_test(const char *function_name) 
+{
+    tests++;
+    printf("Test %i: %30s\t", tests, function_name);
+}
+
+void pass()
+{
+    passed++;
+    printf(GREEN"passed"WHT"\n");
+}
+
+void fail()
+{
+    failed++;
+    printf(RED"failed"WHT"\n");
+}
+
+void NODETestForStringInput()
+{
+    setup_test(__FUNCTION__);
     NODE node;
     char *data;
     data = (char *)malloc(STRBUFSZ);
@@ -24,70 +58,55 @@ void NODETestForStringInput(int *tests, int *passed, int *failed)
     node.data = (void *)data;
     
     if(strcmp(data, (char *)node.data) != 0) {
-        printf(RED"failed"WHT"\n");
-        (*failed)++;
+        fail();
         return; 
     }
-
-    (*passed)++;
-    printf(GREEN"passed"WHT"\n");
+    pass();
     free(data);
 }
 
-void NODETestForNumericalInput(int *tests, int *passed, int *failed)
+void NODETestForNumericalInput()
 {
-    (*tests)++;
-    printf("Test %i: NODETestForNumericalInput\t", *tests);
-    
+    setup_test(__FUNCTION__);
     NODE node;
     double *data;
     data = (double *)malloc(sizeof(double));
     assert(data && "Memory alloction failed");
     *data = 47.11; 
+    
     node.data = (void *)data;
     
     if(*(double *)node.data != *data) {
-        printf(RED"failed"WHT"\n");
-        (*failed)++;
+        fail();
         return; 
     }
-
-    (*passed)++;
-    printf(GREEN"passed"WHT"\n");
+    pass();
     free(data);
 }
 
-void new_listTest(int *tests, int *passed, int *failed)
+void new_listTest()
 {
-    (*tests)++;
-    printf("Test %i: new_listTest\t\t\t", *tests);
-    
+    setup_test(__FUNCTION__);
     LIST *list;
+
     list = new_list();
     
     if(list->next != list || list->previous != list) {
-        printf(RED"failed"WHT"\n");
-        (*failed)++;
+        fail();
         return; 
     }
-
-    (*passed)++;
-    printf(GREEN"passed"WHT"\n");
+    pass();
     free(list);
 }
 
 int main(void)
 {
-    int tests, passed, failed;
-    tests = passed = failed = 0;
-    puts("");
-    printf(YELLOW"Running Tests...\n"WHT"\n");
+    begin_tests();
 
-    NODETestForStringInput(&tests, &passed, &failed);
-    NODETestForNumericalInput(&tests, &passed, &failed);
-    new_listTest(&tests, &passed, &failed);
-    puts("");
-    printf(YELLOW"Tests run: %i, "GREEN"passed: %i, "RED"failed: %i"WHT, tests, passed, failed);
-    puts("\n");
+    NODETestForStringInput();
+    NODETestForNumericalInput();
+    new_listTest();
+    
+    end_tests();
     return EXIT_SUCCESS;
 }
