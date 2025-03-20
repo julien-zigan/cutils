@@ -13,4 +13,6 @@ extern LIST *new_list();
 extern int insert(LIST *list, void *value);
 extern int append(LIST *list, void *value);
 extern NODE *search(LIST *list, void *value, char *type);
+extern void print_list(LIST *list);
+extern int delete(LIST *list, void *value, char *type);
 #endif
