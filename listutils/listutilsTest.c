@@ -125,7 +125,83 @@ void insertTest()
     }
     
     pass();
-    //TODO: free
+
+    iterator = list->next;
+    NODE *tofree;
+    while(iterator != list) {
+        tofree = iterator;
+        iterator = iterator->next;
+        free(tofree);
+    }
+    free(list);
+        
+}
+
+void search4StringTest()
+{
+    setup_test(__FUNCTION__);
+
+    LIST *list = new_list();
+    int i;
+    for (i = 0; i < 10; i++) {
+        char *data = (char *)malloc(STRBUFSZ);
+        assert(data && "Memory alloction failed");
+        sprintf(data, "Test Data %i", i);
+        insert(list, (void *)data);
+    }
+
+    char *look4 = "Test Data 5";
+    NODE *res = search(list, (void *)look4, "s");
+
+    if (strcmp(look4, res->data) != 0) {
+        fail();
+        return;
+    }
+    
+    pass();
+  
+    NODE *iterator = list->next;
+    NODE *tofree;
+    while(iterator != list) {
+        tofree = iterator;
+        iterator = iterator->next;
+        free(tofree);
+    }
+    free(list);
+}
+
+void search4numTest()
+{
+    setup_test(__FUNCTION__);
+
+    LIST *list = new_list();
+    int i;
+    for (i = 0; i < 10; i++) {
+        double *data = (double *)malloc(sizeof(double));
+        assert(data && "Memory alloction failed");
+        *data = i / 2;
+        insert(list, (void *)data);
+    }
+
+    double four = 4.0;
+    double *look4 = &four;
+    NODE *res = search(list, (void *)look4, "d");
+
+    if (*(double *)res->data != *look4) {
+        fail();
+        return;
+    }
+    
+    pass();
+  
+    NODE *iterator = list->next;
+    NODE *tofree;
+    while(iterator != list) {
+        tofree = iterator;
+        iterator = iterator->next;
+        free(tofree);
+    }
+    free(list);
 }
 
 int main(void)
@@ -136,7 +212,9 @@ int main(void)
     NODETestForNumericalInput();
     new_listTest();
     insertTest();
-    
+    search4StringTest();
+    search4numTest();
+
     end_tests();
     return EXIT_SUCCESS;
 }

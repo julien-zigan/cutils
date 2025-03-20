@@ -11,5 +11,5 @@ typedef NODE LIST;
 
 extern LIST *new_list();
 extern int insert(LIST *list, void *value);
-
+extern NODE *search(LIST *list, void *value, char *type);
 #endif
