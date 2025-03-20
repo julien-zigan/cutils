@@ -1,3 +1,3 @@
 # MyUtils
 
-Simple utility programms, written mainly for practise
+Simple utility programms, including a self written testsuite, created mainly for practise
