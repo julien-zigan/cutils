@@ -32,6 +32,28 @@ int insert(LIST *list, void *value)
     return 1;
 }
 
+int append(LIST *list, void *value)
+{
+    if (list == NULL) {
+        fprintf(stderr, "NULL passed as list\n");
+        return -1;
+    }
+    NODE *node;
+    if((node = (NODE *)malloc(sizeof(NODE))) == NULL) {
+        fprintf(stderr, "Memory allocation failed \n");
+        return -2;
+    }
+    
+    node->data = value;
+    node->previous = list->previous;
+    node->next = list;
+    list->previous->next = node;
+    list->previous = node;
+
+    return 1;
+}
+
+    
 NODE *search(LIST *list, void *value, char *type) 
 {
     NODE *iterator = list->next;

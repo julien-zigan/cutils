@@ -137,6 +137,45 @@ void insertTest()
         
 }
 
+void appendTest()
+{
+    setup_test(__FUNCTION__);
+
+    LIST *list = new_list();
+
+    int i;
+    for (i = 0; i < 10; i++) {
+        char *data = (char *)malloc(STRBUFSZ);
+        assert(data && "Memory alloction failed");
+        sprintf(data, "Test Data %i", i);
+        append(list, (void *)data);
+    }
+    
+    NODE *iterator = list->next;
+    i = 0;
+    while(iterator != list) {
+        char cmpdata[12];
+        sprintf(cmpdata, "Test Data %i", i++);
+        if (strcmp(iterator->data, cmpdata) != 0) {
+            fail();
+            return;
+        }
+        iterator = iterator->next;
+    }
+    
+    pass();
+
+    iterator = list->next;
+    NODE *tofree;
+    while(iterator != list) {
+        tofree = iterator;
+        iterator = iterator->next;
+        free(tofree);
+    }
+    free(list);
+        
+}
+
 void search4StringTest()
 {
     setup_test(__FUNCTION__);
@@ -212,6 +251,7 @@ int main(void)
     NODETestForNumericalInput();
     new_listTest();
     insertTest();
+    appendTest();
     search4StringTest();
     search4numTest();
 
