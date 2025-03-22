@@ -1,16 +1,8 @@
+#include "treeutils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
-typedef struct tnode{
-    int value;
-    struct tnode *left, *right;
-} TNODE;
-
-typedef struct qe{
-    struct qe *next;
-    TNODE *node;
-} QE;
 
 TNODE *newtnode(int value)
 {
@@ -60,6 +52,13 @@ int enque(QE **queue, TNODE *n)
     return 1;
 }
 
+QE *inorderenqueue(TNODE *t, QE **queue)
+{
+    if (t->left) inorderenqueue(t->left, queue);
+    enque(queue, t);
+    if (t->right) inorderenqueue(t->right, queue);
+}
+
 QE *deque4freeing(QE **queue) 
 {
     QE *p = *queue;
@@ -94,6 +93,28 @@ TNODE *delete_leaf4freeing(TNODE **t, int value)
     if (q->right) delete_leaf4freeing(&q->right, value);
 }
 
+void printlevel(TNODE *tree)
+{
+    int nodeCount;
+    if (tree == NULL) return;
+    QE *ptr = NULL;
+    enque(&ptr, tree);
+    nodeCount = queuelength(ptr);
+    while (1) {
+        nodeCount = queuelength(ptr);
+        if (nodeCount == 0) break;
+        while(nodeCount > 0) {
+            QE *q = deque4freeing(&ptr);
+            printf("%i ", q->node->value);
+            if(q->node->left) enque(&ptr, q->node->left);
+            if(q->node->right) enque(&ptr, q->node->right);
+            nodeCount--;
+        }
+        puts("");
+    }
+}
+
+/* FOR QUICK TESTING */
 int main(void) 
 {
     int vals[] = {6, 3, 7, 9, 1, 4, 2, 8, 0};
@@ -102,11 +123,14 @@ int main(void)
     int i;
     for (i = 0; i < 9; i++) {
         TNODE *n = newtnode(vals[i]);
-        enque(&queue, n);
+        /*enque(&queue, n);*/
         /*printf("queuelength = %d\n", queuelength(queue));*/
         tinsert(root, n);
     }
-    i = 0;
+
+    printlevel(root);
+
+    /*i = 0;*/
     /**/
     /*QE *qptr = queue;*/
     /*while(qptr) {*/
@@ -123,15 +147,15 @@ int main(void)
     /*printf("forFreeing->node->value: %i\n", forFreeing->node->value);*/
     /*free(forFreeing);    */
     /*printf("Queue: %d\n", queue->node->value);*/
-    /*/*inordertrav(root);*/
-    puts("");
-    
+    /*inordertrav(root);*/
+    /*puts("");*/
+    /**/
     /*for (i = 0; i < 10; i++) {*/
     /*    printf("trying to delete %i...\n", i);*/
     /*    TNODE *del = delete_leaf4freeing(&root, i);*/
     /*    if (del) free(del);*/
     /*    inordertrav(root),*/
-    /*    /*puts("");*/
-    /*}*/
+    /*    puts("");*/
+    /* }*/
     return EXIT_SUCCESS;
 }
